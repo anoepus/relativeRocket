@@ -47,7 +47,7 @@
 
         const fetchRelativeTime = async (hour, minute, second) => {
             try {
-                const response = await fetch('http://localhost:8080/api/relativeTime', {
+                const response = await fetch('/api/relativeTime', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
