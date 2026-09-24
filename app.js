@@ -19,12 +19,12 @@ app.post('/api/relativeTime', (req, res) => {
     const c = 299792; // speed of light in km/s
     const realSeconds = h * 3600 + m * 60 + s; // total seconds elapsed since midnight
 
-    const gamma = 1 / Math.sqrt(1 - (kms * kms) / (c * c));
+    const gamma = 1 / Math.sqrt(1 - (kms ** 2) / (c * c));
     const rocketSeconds = realSeconds / gamma;
 
-    let rH = Math.floor(rocketSeconds / 3600);
-    let rM = Math.floor((rocketSeconds % 3600) / 60);
-    let rS = Math.floor(rocketSeconds % 60);
+    const rH = Math.floor(rocketSeconds / 3600);
+    const rM = Math.floor((rocketSeconds % 3600) / 60);
+    const rS = Math.floor(rocketSeconds % 60);
 
     res.send({
         hours: formatTime(rH),
