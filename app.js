@@ -19,7 +19,7 @@ app.post('/api/relativeTime', (req, res) => {
     const c = 299792; // speed of light in km/s
     const realSeconds = h * 3600 + m * 60 + s; // total seconds elapsed since midnight
 
-    const gamma = 1 / Math.sqrt(1 - (kms ** 2) / (c * c));
+    const gamma = 1 / Math.sqrt(1 - (kms ** 2) / (c ** 2));
     const rocketSeconds = realSeconds / gamma;
 
     const rH = Math.floor(rocketSeconds / 3600);
@@ -37,9 +37,9 @@ app.post('/api/relativeTime', (req, res) => {
 //GET real time clock
 app.get('/api/clocks', (req, res) => {
     const today = new Date();
-    let h = today.getHours();
-    let m = today.getMinutes();
-    let s = today.getSeconds();
+    const h = today.getHours();
+    const m = today.getMinutes();
+    const s = today.getSeconds();
     h = formatTime(h);
     m = formatTime(m);
     s = formatTime(s);
