@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relative Rocket</title>
+</head>
+<body>
+    <h1>Relative Rocket</h1>
+    <p>See how much slower time is compared to ours inside a rocket that has been flying at a specific speed since midnight</p>
+    <div>
+        <span id="wClock"></span> <!--World Clock-->
+    </div>
+    <div>
+        <span id="rClock"></span> <!--Rocket Clock-->
+    </div>
+
+    <div id="rocket"></div> <!--Rocket image-->
+
+    <div id="slider">
+        <form id="speedForm">
+            <input type="range" min="0" max="299791" value="0" id="sliderRange">
+            <span id="sliderValue">0</span> km/s
+            <button id="submitSpeed" type="submit">Apply</button>
+        </form>
+    </div> <!--Slider-->
+
+    <div>
+
+    </div>
+
+    <script>
+
+        const wClock = document.getElementById('wClock');
+        const rClock = document.getElementById('rClock');
+        const speedForm = document.getElementById('speedForm');
+        const sliderRange = document.getElementById('sliderRange');
+        const sliderValue = document.getElementById('sliderValue');
+
+        let rHour = "00";
+        let rMinute = "00";
+        let rSecond = "00";
+
+        sliderRange.addEventListener('input', () => {
+            sliderValue.textContent = sliderRange.value;
+        });
+
+        const fetchRelativeTime = async (hour, minute, second) => {
+            try {
+                const response = await fetch('http://localhost:8080/api/relativeTime', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        rH: hour,
+                        rM: minute,
+                        rS: second,
+                        kms: sliderRange.value,
+                    }),
+                });
+                const data = await response.json();
+                rHour = data.hours;
+                rMinute = data.minutes;
+                rSecond = data.seconds;
+                rClock.textContent = rHour + ":" + rMinute + ":" + rSecond;
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        speedForm.addEventListener('submit', (event) => {
+            event.preventDefault(); //stops page from reloading
+            const date = new Date();
+            fetchRelativeTime(date.getHours(), date.getMinutes(), date.getSeconds());
+        });
+
+        function time() { //Our time
+            const date = new Date();
+            const hour = formatTime(date.getHours());
+            const minute = formatTime(date.getMinutes());
+            const second = formatTime(date.getSeconds());
+
+            wClock.textContent =
+                hour + ":" + minute + ":" + second;
+        };
+
+        function formatTime(i) { //Time formatter (if 1 digit add 0 in front)
+            if (i < 10) {
+                return "0" + i
+            }
+            return i;
+        }
+
+        setInterval(time, 1000);
+        time();
+    </script>
+</body>
+</html>
